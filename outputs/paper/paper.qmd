@@ -1,13 +1,12 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "The Mysterious Disappearance of Teen Suicidality in The US during the 1990s"
+subtitle: "A Statistical Analysis of the relationship between Legalized Abortion and Teen Suicidality in 1990s US."
 author: 
-  - First author
-  - Another author
+  - Jin Di Lu
 thanks: "Code and data are available at: LINK."
 date: "`r Sys.time()`"
 date-format: "D MMMM YYYY"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This study investigates the correlative relationship between abortion rates and teen suicidality rates in the United States from 1970 to 2000. Using longitudinal data and controlling for confounding factors, I found a significant correlation between abortion rates and teen suicidality rates during the studied period, suggesting that the availability of legal abortion might have contributed to the reduction in the number of children born into adverse family conditions and, consequently, alleviated the risk factors for teen suicidality. This research highlights the importance of considering the broader social and psychological implications of abortion policies and calls for further exploration of the causal mechanisms and long-term impacts."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -27,6 +26,17 @@ library(palmerpenguins)
 
 You can and should cross-reference sections and sub-sections. For instance, @sec-data and @sec-first-point. 
 
+The dramatic decline in teen suicide rates in the United States during the 1990s-2000s is still considered a mystery in present day in both public and academic discussion (Males, 1997). Like the sudden decline in crime that mysteriously occurred during the 1990s (Ford, 2016), teen suicide rates fell in the same fashion following a similar trend.  A wide array of factors may have contributed to this phenomenon, and understanding these variables is crucial for developing effective strategies to maintain and further improve mental health among adolescents, especially during an where American teen suicide rates are dramatically rising again (Rinehart and Barkley, 2023). In this paper, I will investigate the potential variables (in this case, legalized abortion) and its correlative relationship with teen suicidality in the United States. I will be focusing on the data between 1970 and 2000. By doing so, I hope to shed light on the impact of the legalization of abortion on the suicidality rates of young people, particularly in the context of how it influences family functioning and relationships.
+
+Several key studies and articles inform my research. Levitt and Donohue's (2001) seminal work, "The Impact of Legalized Abortion on Crime Over The Last Two Decades," attributes the enactment of Roe v. Wade in 1973 as a major factor contributing to the decline in crime rates across the nation. The authors argue that legalized abortion allowed mothers in emotionally and economically challenging circumstances to make informed choices, ultimately reducing the number of children born into adverse family conditions to be incentivized towards criminal behavior.
+
+Building on Levitt and Donohue's findings on the impact of legalized abortion on adverse family conditions, in the qualitative study, "Exploring the Family Factors Associated with Suicide Attempts among Adolescents and Young Adults,"(Mathew et al., 2021)  establishes a connection between the quality of family functioning and relationships and the likelihood of teen suicidality. This connection provides a potential pathway through which legalized abortion might have indirectly contributed to the observed decline in teen suicidality during the 1990s-2000s.
+
+In "The Relationship of Family Functioning and Suicidal Ideation among Adolescents: The Mediating Role of Defeat and the Moderating Role of Meaning in Life," (Yang et al., 2022) provide quantitative data supporting the impact of family conditions on teen suicidality. Their research further corroborates the findings of the previously mentioned work and highlights the importance of considering family factors in understanding the decline in teen suicidality rates.
+
+Finally, the article "Abortion Restrictions Linked to Increased Suicide Rates: Study" by Lisa O'Mary discusses how abortion restrictions can lead to increased suicidality rates among women, including both adult and teen populations. This article adds another dimension to my understanding of the relationship between abortion laws and suicidality in the United States.
+
+Drawing upon these studies and articles, I will conduct a comprehensive analysis to examine the potential correlative relationship between abortion rates and teen suicidality. My investigation will provide valuable insights into the complex interplay between abortion policies, family functioning, and suicidality among adolescents in the United States.
 
 
 # Data {#sec-data}
