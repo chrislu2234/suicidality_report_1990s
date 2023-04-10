@@ -3,7 +3,7 @@ title: "The Mysterious Disappearance of Teen Suicidality in The US during the 19
 subtitle: "A Statistical Analysis of the relationship between Legalized Abortion and Teen Suicidality in 1990s US."
 author: 
   - Jin Di Lu
-thanks: "Code and data are available at: LINK."
+thanks: "Code and data are available at: https://github.com/chrislu2234/suicidality_report_1990s"
 date: "`r Sys.time()`"
 date-format: "D MMMM YYYY"
 abstract: "This study investigates the correlative relationship between abortion rates and teen suicidality rates in the United States from 1973 to 2006. Using longitudinal data and controlling for confounding factors, I found a significant correlation between abortion rates and teen suicidality rates during the studied period, suggesting that the availability of legal abortion might have contributed to the reduction in the number of children born into adverse family conditions and, consequently, alleviated the risk factors for teen suicidality. This research highlights the importance of considering the broader social and psychological implications of abortion policies and calls for further exploration of the causal mechanisms and long-term impacts."
