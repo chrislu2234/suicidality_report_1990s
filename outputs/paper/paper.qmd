@@ -22,205 +22,199 @@ library(ggplot2)
 library(fable)
 library(tsibble)
 library(flextable)
-```
 
-
-# Introduction
-
-The dramatic decline in teen suicide rates in the United States during the the late 1990s and early 2000s is still considered a mystery in present day in both public and academic discussion (Males, 1997). Like the sudden decline in crime that also mysteriously occurred during the late 1990s (Ford, 2016), teen suicide rates fell in the same fashion following a similar trend.  A wide array of factors may have contributed to this phenomenon, and understanding these variables is crucial for developing effective strategies to maintain and further improve mental health among adolescents, especially during an where American teen suicide rates are dramatically rising again (Rinehart and Barkley, 2023). In this paper, I will investigate the potential variables (in this case, legalized abortion) and its correlative relationship with teen suicidality in the United States. I will be focusing on the data between 1973 and 2000, but also include data from up to 2016. By doing so, I hope to shed light on the impact of the legalization of abortion on the suicidality rates of young people, particularly in the context of how it influences family functioning and relationships.
-
-Several key studies and articles inform my research. Levitt and Donohue's @NBERw25863 seminal work, "The Impact of Legalized Abortion on Crime Over The Last Two Decades," attributes the enactment of Roe v. Wade in 1973 as a major factor contributing to the decline in crime rates across the nation. The authors argue that legalized abortion allowed mothers in emotionally and economically challenging circumstances to make informed choices they couldn't have before, ultimately reducing the number of children born into adverse family conditions to be incentivized towards criminal behavior.
-
-Building on Levitt and Donohue's findings on the impact of legalized abortion on adverse family conditions, in the qualitative study, "Exploring the Family Factors Associated with Suicide Attempts among Adolescents and Young Adults,"@PMC8313455  establishes a connection between the quality of family functioning and relationships and the likelihood of teen suicidality. This connection provides a potential pathway through which legalized abortion might have indirectly contributed to the observed decline in teen suicidality during the 1990s.
-
-Finally, "The Relationship of Family Functioning and Suicidal Ideation among Adolescents: The Mediating Role of Defeat and the Moderating Role of Meaning in Life," @PMC9740712 provide quantitative data supporting the impact of family conditions on teen suicidality. Their research further corroborates the findings of the previously mentioned work and highlights the importance of considering family factors in understanding the decline in teen suicide rates.
-
-Drawing upon these studies and articles, I will conduct a comprehensive analysis to examine the potential correlative relationship between abortion rates and teen suicidality. My investigation will provide valuable insights into the complex interplay between abortion policies, family functioning, and suicidality among adolescents in the United States.
-
-In section 1 of this paper, I have introduced the significance of my statistical question and the literature and discussion that surrounds it. In section 2, I will expand on the dataset I have used for my findings and describe the reasons why I have chosen certain variables for my study. In section 3, I will describe the 4 models used to investigate the correlation between abortion rates enabled by legalization and teen suicide rates between the same time frame. I will summarize my findings in section 4 and provide a discussion of them in section 5 with acknowledgement of limitations and further actions that can be taken to enhance this topic of research.
-
-This paper uses @citeR, @tidyverse, and @ggplot2 to render, visualize, and clean all the data and graphs used in the paper.
-
-
-# Data {#sec-data}
-
-For this study, I collected data on teen suicides and abortion rates from two primary sources. The data on teen suicides were obtained from the CDC WONDER's Compressed Mortality database, which encompasses mortality and population counts for all U.S. counties. The CDC WONDER's Compressed Mortality database is a comprehensive, public health information system maintained by the Centers for Disease Control and Prevention (CDC). It serves as a valuable resource for researchers, public health professionals, and policymakers, providing access to a wide range of data related to mortality and population counts for all U.S. counties. The database enables users to retrieve and analyze vital statistics data on various aspects of mortality, such as cause of death, state, county, age, race, sex, and year.
-
-The purpose of the Compressed Mortality database is to support evidence-based decision-making and inform public health policies, programs, and interventions. By providing a centralized and accessible platform for mortality data, the CDC WONDER system helps users identify trends, disparities, and patterns in mortality, which can be crucial for understanding and addressing health-related issues. The database typically serves to facilitate research and analysis on the health status of the U.S. population, monitor changes in mortality over time, and evaluate the effectiveness of public health initiatives. Moreover, it assists in identifying areas that may require targeted interventions, resources, or further investigation. 
-
-To collect data from the desired year ranges (1973-2016), I used three different request forms: Mortality for 1999-2016 with ICD 10 codes, Mortality for 1979-1998 with ICD 9 codes, and Mortality for 1968-1978 with ICD 8 codes. Each request form was submitted to obtain data on suicide deaths among individuals aged 15-19 in the U.S. population, including gender as a variable to identify any differences. The definition of suicide remained consistent across all year ranges as death caused by "self-inflicted harm," despite varying ICD codes. Further information on data retrieval can be found in the readme file.
-
-The Guttmacher Institute's "Pregnancies, Births and Abortions in the United States" report is a periodically updated publication that provides comprehensive data on pregnancy outcomes, including abortions, live births, and miscarriages, in the United States. The report presents vital statistics on abortion rates, ratios, and numbers, as well as data on pregnancy rates and birth rates among different age groups, particularly focusing on women of reproductive age (15-49 years old).
-
-The purpose of this report is to inform researchers, policymakers, healthcare providers, and the general public about the current state of reproductive health and pregnancy outcomes in the United States. By maintaining and updating this report, the Guttmacher Institute contributes to a better understanding of the factors that influence reproductive health decisions and outcomes, as well as the effectiveness of reproductive health policies and programs.
-
-The Guttmacher Institutes' dataset is the same source used by Levitt and Donohue to support their findings. I extracted information on abortion rates between 1973 and 2017, where abortion rates are defined as the number of abortions per 1,000 women in a given year. The dataset was obtained by saving it as a CSV file from the Guttmacher Institute's website. Additional details on data collection can be found in the Methodology Appendix.
-
-Both the CDC WONDER's Compressed Mortality database and the Guttmacher Institute's Database and Research on Abortion Rates are comprehensive and census-like in nature, minimizing the risk of biases in the data. This robustness allows for a reliable analysis of the correlative relationship between teen suicidality rates and abortion rates during the studied period.
-
-For the purposes of this paper, I collected both data up to 2016 from CDC WONDER's Compressed Mortality Database and up to 2017 from Guttmacher Institutes' abortion dataset. However, for parts of the analysis, I will only analyze up to year 2000, as I believe the sudden spike in teen suicide rates near the early 2010s is out of the scope of this paper. I will be running a linear time-series regresesion to explore how correlated the two factors may be, and whether or not abortion rates can be a good explanation for the decline in teen suicides in the late 1990s. 
-
-# Models
-
-```{r}
 #Read CSVs
 setwd('C:/Users/chris/OneDrive/Documents/GitHub/suicidality_report_1990s')
 suicides <- read_csv("outputs/clean_data/cleaned_suicides.csv")
 abortions <- read_csv("outputs/clean_data/cleaned_abort.csv")
 ```
-Before engaging with the models, it is best to first understand the data. In the exploratory stage of my analysis, I visually represented teen suicide rates between 1973 to 2016. Afterwards, I explored the differences in these rates between males and females, demonstrating to what extent gender affects the statistics in teen suicides. 
 
-Next, I plotted abortion rates between the years 1973 to 2016. I then plotted teen suicide rates against abortion rates as an attempt to visually demonstrate the potential relationship between the two unimodal plots. In modelling, I fit changes in abortion rates in relation to changes in teen suicide rates to properly determine the extent of its effects.
+# Introduction
+The dramatic decline in teen suicide rates in the United States during the the late 1990s and early 2000s is still considered a mystery in present day in both public and academic discussion @males_1997. Like the sudden decline in crime that also mysteriously occurred during the late 1990s @ford_2021, teen suicide rates fell in the same fashion following a similar trend.  A wide array of factors may have contributed to this phenomenon, and understanding these variables is crucial for developing effective strategies to maintain and further improve mental health among adolescents, especially during an where American teen suicide rates are dramatically rising again @rinehart_barkley_2023. In this paper, I will investigate the potential variables (in this case, legalized abortion) and its correlative relationship with teen suicidality in the United States. I will be focusing on the data between 1973 and 2000, but also include data from up to 2016. By doing so, I hope to shed light on the impact of the legalization of abortion on the suicidality rates of young people, particularly in the context of how it influences family functioning and relationships.
 
-To engage in proper regression analysis, I also used @fable, @tsibble, and @flextable. Fable offers a wide variety of packages dedicated to forecasting models that use univariate and multivariate time series forecasting models. For this paper, I used a time series linear regression to explore the relationship and influences abortion rates may have had on teen suicide rates. Tsibble was included to help transform my dataframes into Time Series Tibbles that the time series linear regression is able to use. Finally, I included patchwork to improve presentation and overall clarity.
+## Crime and Adverse Childhoods
+Several key studies and articles inform my research. Levitt and Donohue's @NBERw25863 seminal work, "The Impact of Legalized Abortion on Crime Over The Last Two Decades," attributes the enactment of Roe v. Wade in 1973 as a major factor contributing to the decline in crime rates across the nation. The authors argue that legalized abortion allowed mothers in emotionally and economically challenging circumstances to make informed choices they couldn't have before, ultimately reducing the number of children born into adverse family conditions to be incentivized towards criminal behavior.
 
-The Time series linear regression model I will be working with is written below:
-$$
+## Suicidal Ideation and Adverse Family Conditions
+Building on Levitt and Donohue's findings on the impact of legalized abortion on adverse family conditions, in the qualitative study, "Exploring the Family Factors Associated with Suicide Attempts among Adolescents and Young Adults,"@mathew_saradamma_krishnapillai_muthubeevi_2020 establishes a connection between the quality of family functioning and relationships and the likelihood of teen suicidality. This connection provides a potential pathway through which legalized abortion might have indirectly contributed to the observed decline in teen suicidality during the 1990s.
 
-TSR_{t} = \beta_{0} + \beta_{1} AR_{t}+ \epsilon_{t}
+Finally, "The Relationship of Family Functioning and Suicidal Ideation among Adolescents: The Mediating Role of Defeat and the Moderating Role of Meaning in Life," @yang_hu_zeng_liu_wu_zhang_2022 provide quantitative data supporting the impact of family conditions on teen suicidality. Their research further corroborates the findings of the previously mentioned work and highlights the importance of considering family factors in understanding the decline in teen suicide rates.
 
-$$
-* The Dependent variable being investigated is Teen Suicide Rates, denoted in TSR. 
-* Beta0 represents the intercept, which is a point that will be the starting point of the estimate. 
-* Beta1 represents the estimate (slope) of the regression, which represents the percent change in TSR for increase in Abortion Rates (denoted as AR)
-* Epsilon represents the innovation terms in a Time-Series Linear Model, such as potential errors.
+Drawing upon these studies and articles, I will conduct a comprehensive analysis to examine the potential correlative relationship between abortion rates and teen suicidality. My investigation will provide valuable insights into the complex interplay between abortion policies, family functioning, and suicidality among adolescents in the United States.
 
-The first time series linear regression model looked at the relationship between abortion rates and teen suicide rates between the years 1973 to 2000s without any adjustments made to either variables. The output was very troubling, the coefficient reported an increase in suicides for each percentage increase in abortions. This followed with a weak R-squared, demonstrating that it was very difficult to explain suicide rates in 1973-2000 with abortion rates in 1973-2000. This model's inability to investigate the relationship between the two factors was becase the time series linear regression model is unaware that natal decisions will only have an impact on the population presented around 15-19 years later.
+## Sections
+In section 1 of this paper, I have introduced the significance of my statistical question and the literature and discussion that surrounds it. In section 2, I will expand on the dataset I have used for my findings and describe the reasons why I have chosen certain variables for my study. In section 3, I will describe the 4 models used to investigate the correlation between abortion rates enabled by legalization and teen suicide rates between the same time frame. I will summarize my findings in section 4 and provide a discussion of them in section 5 with acknowledgement of limitations and further actions that can be taken to enhance this topic of research. This paper uses R @citeR, Tidyverse @tidyverse, and Ggplot2 @ggplot2 to render, visualize, and clean all the data and graphs.
 
-$$
+# Data {#sec-data}
 
-TSR_{t} = \beta_{0} + \beta_{1} AAR_{t}+ \epsilon_{t}
+## Introduction of Data
+For this study, I collected data on teen suicides and abortion rates from two primary sources. The data on teen suicides were obtained from the CDC WONDER's Compressed Mortality database @wonder_2023, which encompasses mortality and population counts for all U.S. counties. The CDC WONDER's Compressed Mortality database is a comprehensive, public health information system maintained by the Centers for Disease Control and Prevention (CDC). It serves as a valuable resource for researchers, public health professionals, and policymakers, providing access to a wide range of data related to mortality and population counts for all U.S. counties. The database enables users to retrieve and analyze vital statistics data on various aspects of mortality, such as cause of death, state, county, age, race, sex, and year. The data on abortion rates and numbers were obtained from the Guttmacher Institute's "Pregnancies, Births and Abortions in the United States" @maddow-zimet_kost_2022 report. This report provides comprehensive data on pregnancy outcomes, including abortions, live births, and miscarriages, in the United States. The report presents vital statistics on abortion rates, ratios, and numbers, as well as data on pregnancy rates and birth rates among different age groups, particularly focusing on women of reproductive age (15-49 years old).
 
-$$
-Hence, I produced a second model with an adjusted rate of abortion. Rather than analyzing the relationship between suicide rates and abortion strictly by their numbers in each of those years, I looked to analyze the relationship between teen suicide rates and abortion rates from 17 years prior. I believe this is the best way to represent the impacts abortions have on the quality of life of children born after its legalization in the United States. 
+## Data Context
+The purpose of the Compressed Mortality database is to support evidence-based decision-making and inform public health policies, programs, and interventions. By providing a centralized and accessible platform for mortality data, the CDC WONDER system helps users identify trends, disparities, and patterns in mortality, which can be crucial for understanding and addressing health-related issues. The database typically serves to facilitate research and analysis on the health status of the U.S. population, monitor changes in mortality over time, and evaluate the effectiveness of public health initiatives. Moreover, it assists in identifying areas that may require targeted interventions, resources, or further investigation. 
 
-In other words:
-* The Dependent variable being investigated is Teen Suicide Rates, denoted in TSR. 
-* Beta0 represents the intercept, which is a point that will be the starting point of the estimate. 
-* Beta1 represents the estimate (slope) of the regression, which represents the percent change in TSR for increase in Adjusted Abortion Rates (denoted as AR), AAR are 1973 abortion rates placed in 1990 as a way to represent its effects. 
-* Epsilon represents the innovation terms in a Time-Series Linear Model, such as potential errors.
+On the other hand, the purpose of Guttmacher Institute's report is to inform researchers, policymakers, healthcare providers, and the general public about the current state of reproductive health and pregnancy outcomes in the United States. By maintaining and updating this report, the Guttmacher Institute contributes to a better understanding of the factors that influence reproductive health decisions and outcomes, as well as the effectiveness of reproductive health policies and programs. Furthermore, the Guttmacher Institute's dataset is the same source used by Levitt and Donohue to support their findings. Additional details on data collection can be found in the Methodology Appendix of the website.
 
-In this second model, I was able to demonstrate the relationship between teen suicide rates and abortions, showing how an increase in abortions from 17 years prior decreased teen suicides. Furthermore, the R Squared of this model was a notable ~0.500. I produced 2 additional models to see if this stands with male and female teens as well. These two additional models are:
+## Data Gathering
+To collect data from the desired year ranges (1973-2016), I used three different request forms: Mortality for 1999-2016 with ICD 10 codes, Mortality for 1979-1998 with ICD 9 codes, and Mortality for 1968-1978 with ICD 8 codes. Each request form was submitted to obtain data on suicide deaths among individuals aged 15-19 in the U.S. population, including gender as a variable to identify any differences. The definition of suicide remained consistent across all year ranges as death caused by "self-inflicted harm," despite varying ICD codes. Further information on data retrieval can be found in the readme file. I extracted information on abortion rates between 1973 and 2017, where abortion rates are defined as the number of abortions per 1,000 women in a given year. The dataset was obtained by saving it as a CSV file from the Guttmacher Institute's website. Both the CDC WONDER's Compressed Mortality database and the Guttmacher Institute's Database and Research on Abortion Rates are comprehensive and census-like in nature, minimizing the risk of biases in the data. This robustness allows for a reliable analysis of the correlative relationship between teen suicide rates and abortion rates during the studied period.
 
-$$
+For the purposes of this paper, I collected both data up to 2016 from CDC WONDER's Compressed Mortality Database and up to 2017 from Guttmacher Institutes' abortion dataset. However, for parts of the analysis, I will only analyze up to year 2000, as I believe the sudden spike in teen suicide rates near the early 2010s is out of the scope of this paper. I will be running a linear time-series regresesion to explore how correlated the two factors may be, and whether or not abortion rates can be a good explanation for the decline in teen suicides in the late 1990s. 
+\newpage
 
-TSRm_{t} = \beta_{0} + \beta_{1} AAR_{t}+ \epsilon_{t}
-
-$$
-$$
-
-TSRf_{t} = \beta_{0} + \beta_{1} AAR_{t}+ \epsilon_{t}
-
-$$
-* The Dependent variable being investigated are Teen Suicide Rates for males sand females, denoted in TSRm and TSRf. 
-* Beta0 represents the intercept, which is a point that will be the starting point of the estimate. 
-* Beta1 represents the estimate (slope) of the regression, which represents the percent change in TSR for increase in Adjusted Abortion Rates (denoted as AR), AAR are 1973 abortion rates placed in 1990 as a way to represent its effects. 
-* Epsilon represents the innovation terms in a Time-Series Linear Model, such as potential errors.
-
-Overall, I produced 6 figures and 4 models (which includes one table and one figure each) to demonstrate the potential influences abortion rates in 1973 may have had on teen suicide rates in the 1990s. By demonstrating that the rise in abortion rates in 1973 can to a certain extent statistically explain the decline in teen suicides in the 1990s, I believe I have shown that there may be a significant relationship between these two variables worthy of further investigation.
-
-Figure 1: Teen Suicide Rates (Crude per 100 000) Total
+## Data Exploration and Contextualization
+Before engaging with the models, it is best to first understand the data. In the exploratory stage of my analysis, I visually represented teen suicide rates between 1973 to 2016. Afterwards, I explored the differences in these rates between males and females, demonstrating to what extent gender affects the statistics in teen suicides. I plotted abortion rates between the years 1973 to 2016. I then plotted teen suicide rates against abortion rates as an attempt to visually demonstrate the potential relationship between the two unimodal plots.
 ```{r}
 #| echo: false
 #| message: false
 #| label: fig-1
-#| fig-cap: Teen Suicide Rates (Crude per 100 000).
+#| fig-cap: Visualization of suicide Rates of Teens (Crude Rate of Suicides Per 100 000) Between 1973 to 2016. If we look at the plot from before the 2000s, it appears to be nearly unimodal. There is a rise that peaks around the 1990s, and immediately declines in 1995. 
 #Filter for Total Suicides from Dataset
 suicides_total <- filter(suicides, gender %in% "Total")
 #Create Graph
 suicides_total %>% 
   ggplot( aes(x=year, y=suicideratetotal)) +
-    geom_line( color = "black", size = 1) +
-    labs(title= "Suicide Rates of Teens (Crude Rate of Suicides Per 100 000) Between 1973 to 2016", 
+    geom_line( color = "black", linewidth = 1) +
+    labs(title= "Teen Suicide Rates", 
          y = "Suicides per 100 000 (Crude)", x = "Year")
 ```
-@fig-1 represents the overall trend of crude teen suicide rates per 100 000 (measured as deaths/population * 100 000) between the years 1973 to 2016. If we look at the plot from before the 2000s, it appears to be nearly unimodal. There is a rise that peaks around the 1990s, and immediately declines in 1995. 
-
-Figure 2: Teen Suicide Rates (Crude per 100 000) Male
-
+\newpage
 ```{r}
 #| echo: false
 #| message: false
 #| label: fig-2
-#| fig-cap: Teen Suicide Rates (Crude per 100 000) for Males. 
+#| fig-cap: Visualization of suicide Rates of Teens (Crude Rate of Suicides Per 100 000) Between 1973 to 2006 for Males. This figure also is nearly unimodal before the 2000s. There is a rise that peaks around the 1990s, and immediately declines in 1995. 
 #Filter for Total Suicides from Dataset
 suicides_male <- filter(suicides, gender %in% "Male")
 #Create Graph
 suicides_male %>% 
   ggplot( aes(x=year, y=suicideratetotal)) +
-    geom_line( color = "blue", size = 1) +
-    labs(title= "Suicide Rates of Teens (Crude Rate of Suicides Per 100 000) Between 1973 to 2006 for Males", 
+    geom_line( color = "blue", linewidth = 1) +
+    labs(title= "Teen Suicide Rates (Crude per 100 000) for Males", 
          y = "Suicides per 100 000 (Crude)", x = "Year")
 ```
-@fig-2 represents crude male teen suicide rates per 100 000 between 1973 to 2016. Similar to @fig-1, this figure also is nearly unimodal before the 2000s. There is a rise that peaks around the 1990s, and immediately declines in 1995. It is important to note here that the rate of suicides amongst male teens is higher than that of the total, indicating (as will be demonstrated by @fig-3 later) that female teen suicide rates are likely much lower. 
-
-Figure 3: Teen Suicide Rates (Crude per 100 000) Female
+It is important to note here in @fig-1 that the rate of suicides among male teens is higher than that of the total, indicating (as will be demonstrated by @fig-3 later) that female teen suicide rates are likely much lower. 
+\newpage
 ```{r}
 #| echo: false
 #| message: false
 #| label: fig-3
-#| fig-cap: Teen Suicide Rates (Crude per 100 000) for Females.
+#| fig-cap: Visualization of crude female teen suicide rates per 100 000 between 1973 to 2016. There is a rise that peaks around the 1990s, and immediately declines in 1995. 
 #Filter for Total Suicides from Dataset
 suicides_female <- filter(suicides, gender %in% "Female")
 #Create Graph
 suicides_female %>% 
   ggplot( aes(x=year, y=suicideratetotal)) +
-    geom_line( color = "purple", size = 1) +
-    labs(title= "Suicide Rates of Teens (Crude Rate of Suicides Per 100 000) for Females",
+    geom_line( color = "purple", linewidth = 1) +
+    labs(title= "Teen Suicide Rates (Crude per 100 000) for Females.",
     y = "Suicides per 100 000 (Crude)", 
     x = "Year")
 
 ```
-@fig-3 represents crude female teen suicide rates per 100 000 between 1973 to 2016. Contrary to male teen suicides, the unimodality of this figure is not as severe.. Furthermore, the rate is dramatically lower than that of male teens. Nevertheless, there is a rise that peaks around the 1990s, and immediately declines in 1995. 
-
-Figure 4: Teen Suicide Rates (Crude per 100 000) Male, Female, Total.
+\newpage
 ```{r}
 #| echo: false
 #| message: false
 #| label: fig-4
-#| fig-cap: Teen Suicide Rates (Crude per 100 000) for Males, Females, and Averaged Total. 
+#| fig-cap: Visualization of crude male, female, and all teen suicide rates per 100 000 between 1973 to 2016. As mentioned before, there is a disproportionately high amount of male teen suicides in comparison to females. this averages out in the black bar in the middle, which represents the suicide rates of all teens overall.
 #Create Graph
 ggplot() +
-  geom_line(data = suicides_female, aes(x = year, y = suicideratetotal), color = "purple", size = 1) +
-  geom_line(data = suicides_male, aes(x = year, y = suicideratetotal), color = "blue", size = 1) +
-  geom_line(data = suicides_total, aes(x = year, y = suicideratetotal), color = "black", size = 1) +
-  labs(title= "Suicide Rates of Teens (Crude Rate of Suicides Per 100 000) for All",
+  geom_line(data = suicides_female, aes(x = year, y = suicideratetotal), color = "purple", linewidth = 1) +
+  geom_line(data = suicides_male, aes(x = year, y = suicideratetotal), color = "blue", linewidth = 1) +
+  geom_line(data = suicides_total, aes(x = year, y = suicideratetotal), color = "black", linewidth = 1) +
+  labs(title= "Suicide Rates of Male and Female Teens",
   y = "Suicides per 100 000 (Crude)", 
   x = "Year")
 ```
-@fig-4 represents crude male, female, and all teen suicide rates per 100 000 between 1973 to 2016. As mentioned before, there is a disproportionately high amount of male teen suicides in comparison to females. this averages out in the black bar in the middle, which represents the suicide rates of all teens overall.
-
-Figure 5: Abortion Rates (Number of Abortions per 1 000 Women)
+@fig-3 Shows a unimodal movement in female teen suicides from 1973 to 2016. Contrary to male teen suicides, the unimodality of this figure is not as severe. Furthermore, the rate is dramatically lower than that of male teens. This lower suicide rate among female teens explains why overall teen suicide rates are lower than male teen suicide rates in @fig-4. 
+\newpage
 ```{r}
 #| echo: false
 #| message: false
 #| label: fig-5
-#| fig-cap: Abortion Rates (Number of Abortions per 1 000 Women)
+#| fig-cap: Abortion rates (Number of Abortions per 1000 Women) between 1973 to 2016. Red line follows the increase and decreases of this trend over time.
 abortions %>% 
   ggplot( aes(x=year, y=abortionratetotal)) +
-    geom_line( color = "red", size = 1) +
+    geom_line( color = "red", linewidth = 1) +
     ggtitle("Number of Abortions per 1000 Women")
 ```
-@fig-5 represents abortion rates (Number of Abortions per 1000 Women) between 1973 to 2016. Red line follows the increase and decreases of this trend over time. In this figure, we can see the sudden rise in abortion rates after 1973 as a product of the Roe v. Wade Supreme court Decision to Legalize Abortion. After this, we see how this widespread legalization lead to an improvement to accessible abortion resources and a spike in abortion rates. This trend peaks around the 1980s, and follows a slow decline afterwards.
-
-Graph 6: Graph Teen Suicide Rates vs Abortion Rates
+\newpage
 ```{r}
 #| echo: false
 #| message: false
 #| label: fig-6
 #| fig-cap: Teen Suicide Rates vs. Abortion Rates
 ggplot() +
-  geom_line(data = suicides_total, aes(x = year, y = suicideratetotal), color = "black", size = 1) +
-  geom_line(data = abortions, aes(x = year, y = abortionratetotal), color = "red", size = 1) +
-  labs(title= "Suicide Rates of Teens (Crude Rate Per 100 000) for both Genders",
+  geom_line(data = suicides_total, aes(x = year, y = suicideratetotal), color = "black", linewidth = 1) +
+  geom_line(data = abortions, aes(x = year, y = abortionratetotal), color = "red", linewidth = 1) +
+  labs(title= "Suicide Rates of Teens vs. Abortion Rates",
   y = "Rates", 
   x = "Year",)
 
 ```
-@fig-6 represents an attempt to plot teen suicide rates against abortion rates. However, this plot provides very little information on the topic, as the rates are not proportional to one and another. But if we look closely, the dramatic increase in abortion rates in 1973 can be argued to have manifested in the sharp declinee in teeen suicides in 1995. 
+In @fig-5, we can see the sudden rise in abortion rates after 1973 as a product of the Roe v. Wade Supreme court Decision to Legalize Abortion. After this, we see how this widespread legalization lead to an improvement to accessible abortion resources and a spike in abortion rates. This trend peaks around the 1980s, and follows a slow decline afterwards.
+
+@fig-6 represents an attempt to plot teen suicide rates against abortion rates. However, this plot provides very little information on the topic, as the rates are not proportional to one and another. But if we look closely, the dramatic increase in abortion rates in 1973 can be argued to have manifested in the sharp decline in teen suicides in 1995. 
+
+# Models
+In modelling, I fit changes in abortion rates in relation to changes in teen suicide rates to properly determine the extent of its effects. To engage in proper regression analysis, I also used Fable @fable, Tsibble @tsibble, and Flextable @flextable. Fable offers a wide variety of packages dedicated to forecasting models that use univariate and multivariate time series forecasting models. For this paper, I used a time series linear regression to explore the relationship and influences abortion rates may have had on teen suicide rates. Tsibble was included to help transform my data frames into Time Series Tibbles that the time series linear regression code is able to use. Finally, I included Flextable to improve presentation and overall clarity of summary statistics.
+
+The most difficult aspect to justify by far is the reason of using rates rather than count (frequency) to perform the regression analysis. This makes it difficult as it means the distribution being analyzed is not a distribution but rather a series of counts and averages. However, like temperatures and precipitations over time, a time-series linear regression allows us to demonstrate at least a possible explanatory relationship between these two variables. 
+
+## Model 1: Abortion Rates and Suicide Rates
+The Time series linear regression model I will be working with is written below:
+$$
+TSR_{t} = \beta_{0} + \beta_{1} AR_{t}+ \epsilon_{t}
+$$
+In the following model:
+
+* The Dependent variable being investigated is Teen Suicide Rates, denoted in TSR.
+
+* Beta0 represents the intercept, which is a point that will be the starting point of the estimate. 
+
+* Beta1 represents the estimate (slope) of the regression, which represents the percent change in TSR for increase in Abortion Rates (denoted as AR).
+
+* Epsilon represents the innovation terms in a Time-Series Linear Model, such as potential errors.
+
+The first time series linear regression model looked at the relationship between abortion rates and teen suicide rates between the years 1973 to 2000s without any adjustments made to either variables. The output was very troubling, the coefficient reported an increase in suicides for each percentage increase in abortions. This followed with a weak R-squared, demonstrating that it was very difficult to explain suicide rates in 1973-2000 with abortion rates in 1973-2000. This model's inability to investigate the relationship between the two factors was becase the time series linear regression model is unaware that natal decisions will only have an impact on the population presented around 15-19 years later.
+
+## Model 2: Adjusted Abortion Rates and Suicide Rates.
+$$
+TSR_{t} = \beta_{0} + \beta_{1} AAR_{t}+ \epsilon_{t}
+$$
+Hence, I produced a second model with an adjusted rate of abortion. Rather than analyzing the relationship between suicide rates and abortion strictly by their numbers in each of those years, I looked to analyze the relationship between teen suicide rates and abortion rates from 17 years prior. I believe this is the best way to represent the impacts abortions have on the quality of life of children born after its legalization in the United States. 
+
+In other words:
+
+* The Dependent variable being investigated is Teen Suicide Rates, denoted in TSR. 
+
+* Beta0 represents the intercept, which is a point that will be the starting point of the estimate. 
+
+* Beta1 represents the estimate (slope) of the regression, which represents the percent change in TSR for increase in Adjusted Abortion Rates (denoted as AR), AAR are 1973 abortion rates placed in 1990 as a way to represent its effects. 
+
+* Epsilon represents the innovation terms in a Time-Series Linear Model, such as potential errors.
+
+## Models 3 and 4: Adjusted Abortion Rates vs. Male and Female Teen Suicide Rates
+In this second model, I was able to demonstrate the relationship between teen suicide rates and abortions, showing how an increase in abortions from 17 years prior decreased teen suicides. Furthermore, the R Squared of this model was a notable ~0.500. I produced 2 additional models to see if this stands with male and female teens as well. These two additional models are:
+$$
+TSRm_{t} = \beta_{0} + \beta_{1} AAR_{t}+ \epsilon_{t}
+$$
+$$
+TSRf_{t} = \beta_{0} + \beta_{1} AAR_{t}+ \epsilon_{t}
+$$
+In both the equations above:
+
+* The Dependent variable being investigated are Teen Suicide Rates for males sand females, denoted in TSRm and TSRf. 
+
+* Beta0 represents the intercept, which is a point that will be the starting point of the estimate. 
+
+* Beta1 represents the estimate (slope) of the regression, which represents the percent change in TSR for increase in Adjusted Abortion Rates (denoted as AR), AAR are 1973 abortion rates placed in 1990 as a way to represent its effects. 
+
+* Epsilon represents the innovation terms in a Time-Series Linear Model, such as potential errors.
+
+Overall, I produced 6 figures and 4 models (which includes one table and one figure each) to demonstrate the potential influences abortion rates in 1973 may have had on teen suicide rates in the 1990s. By demonstrating that the rise in abortion rates in 1973 can to a certain extent statistically explain the decline in teen suicides in the 1990s, I believe I have shown that there may be a significant relationship between these two variables worthy of further investigation.
 
 # Results
-Model 1: Teen Suicide Rates vs. Abortion Rates
+## Model 1
 ```{r}
 #| echo: false
 #| message: false
@@ -235,7 +229,7 @@ test_tsbl <- as_tsibble(test_sheet, index = year)
 tested_tsbl <- test_tsbl %>% 
   model(TSLM(suicideratetotal ~ abortionratetotal))
 
-report(tested_tsbl)
+# report(tested_tsbl)
 
 Terms <- c("Intercept", "AAR Coeff.", "R2", "R2 Adj", "P-Value")
 Values <- c(5.442, -0.150, 0.144, 0.568, 0.047)
@@ -246,29 +240,21 @@ flextable1 <- flextable(table1)
 
 flextable1
 ```
-
-
 ```{r}
 #| echo: false
 #| message: false
 #| label: fig-7
-#| fig-cap: Regression Line of Abortion Rates and its Effects on Teen Suicide Rates
-p1 <- augment(tested_tsbl) %>% 
-  ggplot( aes(x = year)) +
-  geom_line( aes(y = suicideratetotal), color = "dark gray", size = 1) +
-  geom_line( aes(y = .fitted), color = "goldenrod", size = 1) +
-  theme_light() +
-  labs(title = "Suicide Rates vs. Abortion Rates", x= "Year", y= "Suicide and Fitted Abortion Rates", color="Rates")
-
+#| fig-cap: Regression Line of Abortion Rates and its Effects on Teen Suicide Rates.
 test_tsbl %>%
   as.data.frame() %>%
   ggplot(aes(x=abortionratetotal, y=suicideratetotal)) +
-    ylab("Suicide Rates (Yearly % change)") +
-    xlab("Abortion Rates (Yearly % change)") +
+    ylab("Suicide Rates (Yearly change)") +
+    xlab("Abortion Rates (Yearly change)") +
     geom_point() +
     geom_smooth(method="lm", se=FALSE)
-
 ```
+
+
 Summary @tbl-1 is the total summary output of the Time Series Linear Regression in the time frame between 1973-2000. As mentioned earlier, this output is concerning, as the coefficient suggests an increase in suicides for increase in abortions. Additionally, the model yields a weak R-squared (both multiple and adjusted), indicating that this model is unable to explain suicide rates using abortion rates. 
 
 @fig-7 plots changes in abortion rates with changes in suicide rates. As mentioned above, this yields a regression model that believes that the increase in abortion rates means an increase in suicide rates. 
@@ -276,8 +262,9 @@ Summary @tbl-1 is the total summary output of the Time Series Linear Regression 
 As written earlier, the limitation of this model and both its table and visual output is its inability to account for the fact that natal decisions would only have impact on suicide rates approximately 15-19 years later. This inherent constraint in the model necessitated further exploration of alternative approaches to better analyze the relationship between these two variables effectively. 
 
 In Models 2, 3, and 4, I will implement a new variable: adjabtrates (for Adjusted Abortion Rates) in my analysis to properly analyze the relationship between abortion rates and teen suicide rates in the 1990s. This new variable will simply place the value of abortion rates in 1973 with teen suicide rates in 1990s. In other words, I will use abortion rates from 17 years prior to measure the suicide rates of teenagers. I believe this is the best way to represent the impacts abortions have on the quality of life of children born after its legalization in the United States. In other words, I will use adjabtrates to properly contextualize the decrease in teen suicides with the rise in abortion rates.
+\newpage
 
-Model 2: Teen Suicide Rates vs. Adjusted Abortion Rates
+## Model 2
 ```{r}
 #| echo: false
 #| message: false
@@ -295,7 +282,7 @@ test_tsbl2 <- as_tsibble(test_sheet2, index = year)
 tested_tsbl2 <- test_tsbl2 %>% 
   model(TSLM(suicideratetotal ~ adjabtrates))
 
-report(tested_tsbl2)
+#report(tested_tsbl2)
 
 Terms <- c("Intercept", "AAR Coeff.", "R2", "R2 Adj", "P-Value")
 Values <- c(14.812, -0.194, 0.546, 0.495, 0.009)
@@ -305,7 +292,6 @@ flextable2 <- flextable(table2)
 
 flextable2
 ```
-
 ```{r}
 #| echo: false
 #| message: false
@@ -323,15 +309,16 @@ Summary @tbl-2 is the total summary output of the Time Series Linear Regression 
 
 @fig-8 beautifully depicts the analysis provided in @tbl-2, as the plot properly depicts the relationship between abortion rates and suicide rates. As demonstrated in @fig-8, the peak in abortions from 17 years prior in abortion rates in 1973-1983 correlates with the decrease in suicide rates in 1990-2000. 
 
-I demonstrated a relationship between teen suicide rates and abortions, revealing that an increase in abortions from 17 years prior was associated with a decrease in teen suicides. The R-squared value for this model was notably stronger, at approximately 0.500, indicating better explanatory power. Furthermore the summary analysis also provides a sensible estimate, demonstrating that an increase in abortion rates meant on average a decrease in teen suicides. 
+I demonstrated a relationship between teen suicide rates and abortions, revealing that an increase in abortions from 17 years prior was associated with a sizeable decrease in teen suicides. The R-squared value for this model was notably stronger, at approximately 0.500, indicating better explanatory power. Furthermore the summary analysis also provides a sensible estimate, demonstrating that an increase in abortion rates meant on average a decrease in teen suicides. 
+\newpage
 
-Model 3: Teen Suicide Rates Male vs. Abortion Rates
+## Model 3
 ```{r}
 #| echo: false
 #| message: false
 #| label: tbl-3
 #| tbl-cap: Adjusted Abortion Rates and its Effects on Male Teen Suicide Rates
-# Make new sheet that starts counting in 1988. 
+# Make new sheet that starts counting in 1990. 
 test3 <- suicides_male
 test3 <- cbind(test3, abortionratetotal = abortions$abortionratetotal)
 test3 <- filter(test3, year %in% c(1990:2000))
@@ -342,7 +329,7 @@ test_tsbl3 <- as_tsibble(test3, index = year)
 tested_tsbl3 <- test_tsbl3 %>% 
   model(TSLM(suicideratetotal ~ adjabtrates))
 
-report(tested_tsbl3)
+# report(tested_tsbl3)
 
 Terms <- c("Intercept", "AAR Coeff.", "R2", "R2 Adj", "P-Value")
 Values <- c(24.325, -0.324, 0.542, 0.491, 0.010)
@@ -354,7 +341,6 @@ flextable3 <- flextable(table3)
 flextable3
 
 ```
-
 ```{r}
 #| echo: false
 #| message: false
@@ -373,14 +359,15 @@ Summary @tbl-2 is the total summary output of the Time Series Linear Regression 
 @fig-9 also corroborates with this analysis, as the plot properly depicts the relationship between abortion rates and male teen suicide rates. As demonstrated in @fig-9, the peak in abortions from 17 years prior in abortion rates in 1973-1983 correlates with the decrease in suicide rates in 1990-2000.
 
 Overall, male teen suicide rates are significantly impacted by the rise in abortion rates that occurred starting in 1973, indicating that legalized abortion can have strong effects on the quality of life of males during youth. 
+\newpage
 
-Model 4: Teen Suicide Rates Female vs. Abortion Rates
+##Model 4
 ```{r}
 #| echo: false
 #| message: false
 #| label: tbl-4
 #| tbl-cap: Adjusted Abortion Rates and its Effects on Female Teen Suicide Rates
-# Make new sheet that starts counting in 1988. 
+# Make new sheet that starts counting in 1990. 
 test4 <- suicides_female
 test4 <- cbind(test4, abortionratetotal = abortions$abortionratetotal)
 test4 <- filter(test4, year %in% c(1988:2000))
@@ -391,7 +378,7 @@ test_tsbl4 <- as_tsibble(test4, index = year)
 tested_tsbl4 <- test_tsbl4 %>% 
   model(TSLM(suicideratetotal ~ adjabtrates))
 
-report(tested_tsbl4)
+# report(tested_tsbl4)
 
 Terms <- c("Intercept", "AAR Coeff.", "R2", "R2 Adj", "P-Value")
 Values <- c(5.890, -0.095, 0.604, 0.568, 0.002)
@@ -402,7 +389,6 @@ flextable4 <- flextable(table4)
 
 flextable4
 ```
-
 ```{r}
 #| echo: false
 #| message: false
@@ -421,6 +407,8 @@ Summary @tbl-3 is the total summary output of the Time Series Linear Regression 
 @fig-10 shows the relationship between abortion rates and female teen suicide rates. As referred to in the comment on the larger R-squared, the points fit the line much closely than the plots in @fig-9
 
 While female teen suicide rates are not as significantly impacted by the rise in abortion rates as males, the strong fit nevertheless provides an urge for further investigation.
+\newpage
+
 # Discussion
 
 ## Natal Policy Changes Only Manifest 18 Years After.
@@ -451,19 +439,7 @@ To improve the model, future research could consider incorporating multiple vari
 
 Finally, the protection of reproductive rights is crucial not only for upholding human well-being but also for preventing the potentially disastrous consequences of future generations born into abhorrent family conditions. As this study suggests, maintaining access to reproductive healthcare and understanding the broader social and psychological implications of reproductive policies are vital to ensuring the mental health and well-being of adolescents. By prioritizing evidence-based decision-making and collaboration between researchers, policymakers, and healthcare professionals, society can work towards promoting the overall health and welfare of all individuals, particularly our most vulnerable populations.
 
-
 \newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional details
-
-
-\newpage
-
 
 # References
 
